@@ -1,9 +1,11 @@
 // analysis_page.dart
 import 'dart:io';
-
+// import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:fruitvision/models/analysis_result.dart';
 import 'package:fruitvision/screens/analysis/result_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:typed_data';
 
 final result = AnalysisResult(
   basicInfo: BasicInfo(
@@ -38,30 +40,72 @@ class AnalysisPage extends StatefulWidget {
 class _AnalysisPageState extends State<AnalysisPage> {
   String? selectedAnalysisType;
   String? selectedImage;
+  // final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    loadModel();
+  }
+
+  Future<void> loadModel() async {
+    // final interpreter =
+    //     await Interpreter.fromAsset('assets/models/model.tflite');
+    // String? result = await TfLite.loadModel(
+    //   model: "assets/models/model.tflite",
+    //   labels: "assets/models/labels.txt",
+    // );
+    // print("Model loaded: $result");
+  }
+
+  String? _result;
+
+  Future<void> runModel() async {
+    // var recognitions = await Tflite.runModelOnImage(
+    //   path: selectedImage!,
+    // );
+
+    // setState(() {
+    //   _result = recognitions.toString();
+    // });
+    // print(_result);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            _buildImagePreview(),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    _buildAnalysisTypes(),
-                    const SizedBox(height: 24),
-                    _buildStartButton(),
-                    const SizedBox(height: 20),
-                  ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 100,
+                width: double.infinity,
+                child: _buildHeader(),
+              ),
+              SizedBox(
+                height: 300,
+                width: double.infinity,
+                child: _buildImagePreview(),
+              ),
+              SizedBox(
+                height: 692,
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      _buildAnalysisTypes(),
+                      const SizedBox(height: 24),
+                      _buildStartButton(),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -354,12 +398,17 @@ class _AnalysisPageState extends State<AnalysisPage> {
       height: 56,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: ElevatedButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AnalysisResultsScreen(result: result),
-          ),
-        ),
+        onPressed: canStartAnalysis
+            ? () {
+                runModel();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AnalysisResultsScreen(result: result),
+                  ),
+                );
+              }
+            : null,
 
         //canStartAnalysis ? _startAnalysis : null,
         style: ElevatedButton.styleFrom(
@@ -384,13 +433,22 @@ class _AnalysisPageState extends State<AnalysisPage> {
   Future<void> _selectImage() async {
     // Implement image picker functionality
     // You'll need to add image_picker package to pubspec.yaml
-    // ImagePicker picker = ImagePicker();
-    // final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    // if (image != null) {
-    //   setState(() {
-    //     selectedImage = image.path;
-    //   });
+    print('Selected Image start');
+    ImagePicker picker = ImagePicker();
+    // final LostDataResponse response = await picker.retrieveLostData();
+    // if (response.isEmpty) {
+    //   print('resposne empty');
+    //   return;
     // }
+    print('Selected Image start');
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    print('Selected Image start');
+    print('image');
+    if (image != null) {
+      setState(() {
+        selectedImage = image.path;
+      });
+    }
   }
 
   void _startAnalysis() {

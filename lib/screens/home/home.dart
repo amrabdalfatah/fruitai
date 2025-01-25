@@ -1,9 +1,10 @@
 // home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:fruitvision/constants/app_colors.dart';
+import 'package:fruitvision/constants/app_constants.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +35,10 @@ class HomeScreen extends StatelessWidget {
           bottomRight: Radius.circular(20),
         ),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'WELCOME!',
             style: TextStyle(
               color: Colors.white,
@@ -45,8 +46,8 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Text(
-            'RENAD',
-            style: TextStyle(
+            AppConstants.user!.name,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 24,
               fontWeight: FontWeight.bold,

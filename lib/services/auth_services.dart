@@ -11,7 +11,7 @@ class AuthService {
       if (user == null) return null;
       final doc = await _firestore.collection('users').doc(user.uid).get();
       if (!doc.exists) return null;
-      return UserModel.fromFirestore(doc.data()!);
+      return UserModel.fromFirestore(doc.id, doc.data()!);
     });
   }
 

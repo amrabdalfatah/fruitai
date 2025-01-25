@@ -56,12 +56,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (!mounted) return;
 
       context.showSuccessSnackBar(
-        'Account created successfully! Please check your email for verification.',
+        'Account created successfully!',
       );
 
-      await Future.delayed(const Duration(seconds: 1));
-      if (!mounted) return;
-      context.go('/verification');
+      // await Future.delayed(const Duration(seconds: 1));
+      // if (!mounted) return;
+      // context.go('/verification');
+      context.go('/signin');
     } catch (e) {
       if (!mounted) return;
       context.showErrorSnackBar(e.toString());

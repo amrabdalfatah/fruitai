@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fruitvision/constants/app_constants.dart';
 import 'package:fruitvision/models/user.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -12,7 +13,11 @@ class AuthProvider extends ChangeNotifier {
   UserModel? get user => _user;
   bool get isLoading => _isLoading;
 
-  Future<String?> signUp(String email, String password, String name) async {
+  Future<String?> signUp(
+    String email,
+    String password,
+    String name,
+  ) async {
     try {
       _isLoading = true;
       notifyListeners();
@@ -45,7 +50,7 @@ class AuthProvider extends ChangeNotifier {
       // إرسال بريد التحقق
       // await userCredential.user!.sendEmailVerification();
 
-      await _loadUserData();
+      // await _loadUserData();
       return null;
     } on FirebaseAuthException catch (e) {
       print('Firebase Error: ${e.code}'); // للتتبع
@@ -76,13 +81,16 @@ class AuthProvider extends ChangeNotifier {
         email: email,
         password: password,
       );
-      print("/////////////////////////");
-      print(credential.user!.emailVerified);
       if (credential.user == null) {
         return 'Failed to sign in';
       }
-
-      print("Sign in successful - User: ${credential.user?.email}");
+      final doc =
+          await _firestore.collection('users').doc(credential.user!.uid).get();
+      print("//////////////////");
+      print(doc.id);
+      print(doc.data());
+      AppConstants.user = UserModel.fromFirestore(doc.id, doc.data()!);
+      print('created user success');
       return null;
     } on FirebaseAuthException catch (e) {
       return switch (e.code) {
@@ -96,12 +104,10 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> _loadUserData() async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      final doc = await _firestore.collection('users').doc(user.uid).get();
-      _user = UserModel.fromFirestore(doc.data()!);
-      notifyListeners();
-    }
-  }
+  // Future<void> _loadUserData() async {
+  //   final user = _user.cred
+
+  //     notifyListeners();
+
+  // }
 }

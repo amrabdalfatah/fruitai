@@ -1,10 +1,10 @@
 name: fruitvision
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.4.4 <4.0.0'
+  sdk: ">=3.4.4 <4.0.0"
 
 dependencies:
   cloud_firestore: ^4.15.5
@@ -13,8 +13,11 @@ dependencies:
   flutter:
     sdk: flutter
   go_router: ^14.6.2
+  image_picker: ^1.1.2
   intl: ^0.20.0
+  path_provider: ^2.1.5
   provider: ^6.1.2
+  # tflite_flutter: ^0.11.0
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +29,4 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/models/
