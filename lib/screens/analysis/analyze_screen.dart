@@ -1,11 +1,11 @@
 // analysis_page.dart
 import 'dart:io';
-// import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:fruitvision/models/analysis_result.dart';
 import 'package:fruitvision/screens/analysis/result_screen.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:typed_data';
+import 'package:tflite_flutter/tflite_flutter.dart';
+import 'package:image/image.dart' as img;
 
 final result = AnalysisResult(
   basicInfo: BasicInfo(
@@ -45,7 +45,31 @@ class _AnalysisPageState extends State<AnalysisPage> {
   @override
   void initState() {
     super.initState();
-    loadModel();
+    // loadModel();
+  }
+
+  Future<void> detectFruit(File imageFile) async {
+    // Load the TFLite model
+    final interpreter =
+        await Interpreter.fromAsset('assets/models/model.tflite');
+
+    // Load and preprocess the image
+    final image = img.decodeImage(imageFile.readAsBytesSync())!;
+    final resizedImage = img.copyResize(image, width: 640, height: 640);
+
+    // Convert the image to a tensor
+    final input = List.generate(1, (_) => resizedImage.getBytes());
+
+    // Run inference
+    final output = List.filled(
+      1,
+      List.filled(25200, 0.0),
+    ); // Adjust output size as per model
+    interpreter.run(input, output);
+
+    // Parse and display results
+    print('///////////////// building process ///////////');
+    print('Detection Results: $output');
   }
 
   Future<void> loadModel() async {
@@ -399,8 +423,9 @@ class _AnalysisPageState extends State<AnalysisPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: ElevatedButton(
         onPressed: canStartAnalysis
-            ? () {
-                runModel();
+            ? () async {
+                // runModel();
+                await detectFruit(File(selectedImage!));
                 Navigator.push(
                   context,
                   MaterialPageRoute(
